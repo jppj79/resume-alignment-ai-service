@@ -163,8 +163,7 @@ You can use a tool like [Postman](https://www.postman.com/) to test the endpoint
             "rating": "High",
             "summary": "The candidate showcases a strong ability to learn new technologies quickly, having adapted to various roles and responsibilities over his 20-year career.",
             "evidence": [
-                "Led the architecture and development of critical AI-powered systems.",
-                ...
+                "Led the architecture and development of critical AI-powered systems."
             ]
         }
     }
