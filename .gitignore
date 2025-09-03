@@ -1,0 +1,57 @@
+# pixi environments
+.pixi
+*.egg-info
+**/__pycache__*
+**/___temp_*
+**/.pixi
+**/__temp_*
+**/.ipynb_checkpoints
+static
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment (cambia si usas otro nombre)
+venv/
+.env/
+.venv/
+
+# Environment variable files
+.env
+*.env
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# VS Code
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Pytest cache
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# Logs
+*.log
+
+# OS-generated files
+.DS_Store
+Thumbs.db
