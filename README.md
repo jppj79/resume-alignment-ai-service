@@ -1,4 +1,4 @@
-![Python](https://img.shields.io/badge/python-3.13.7+-blue.svg)
+![Python](https://img.shields.io/badge/python-3.13+-blue.svg)
 
 # Resume Align AI 🤖
 
@@ -31,6 +31,11 @@ The "secret sauce" of this application is a combination of a modern tech stack a
 * **Data Integrity:** Strict data schemas enforced by Pydantic to ensure clean, predictable JSON output every time.
 
 ---
+
+## Prerequisites 🛠️
+
+- Python 3.13+ 🐍
+- [OpenAI API key](https://platform.openai.com/api-keys) 🔑
 
 ## Installation ⚙️
 
