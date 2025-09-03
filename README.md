@@ -14,14 +14,14 @@ This project was created with a focus on **simplicity and transparency**. While 
 
 It's about more than just tweaking a resume for a single application; it’s about creating a feedback loop for continuous professional improvement.
 
-### ✨ Features
+### Features ✨
 
 * 📊 **Detailed Match Score:** Instantly see where you stand with a comprehensive score.
 * 🌱 **Actionable Skill Gaps:** Know exactly what skills to work on to become a better fit.
 * 🚀 **Learning Potential Rating:** Highlights your ability to adapt and grow into the role, even if you don't meet 100% of the requirements.
 * 🤖 **ATS-Compatibility Check:** Get concrete tips to ensure your resume gets past the bots and is seen by a human.
 
-### 🛠️ Tech Stack & Core Mechanics
+### Tech Stack & Core Mechanics 🛠️
 
 The "secret sauce" of this application is a combination of a modern tech stack and strategic implementation:
 
@@ -32,71 +32,48 @@ The "secret sauce" of this application is a combination of a modern tech stack a
 
 ---
 
-# 🚀 Getting Started
+## Installation ⚙️
 
-## Get the source code
-
-1.  **Clone the repository:**
+1.  Clone the repository:
 
     ```bash
-    git clone https://github.com/jppj79/resume-alignment-ai-service.git
+    $ git clone https://github.com/jppj79/resume-alignment-ai-service.git
+    $ cd resume-alignment-ai-service
     ```
 
-2.  **Navigate to the project directory:**
+2.  Create a virtual environment:
 
     ```bash
-    cd resume-alignment-service
+    $ python -m venv venv
     ```
 
-## Create virtual environment
-
-```bash
-$ python -m venv venv
-```
-
-## Activate virtual environment (Windows)
-
-```bash
-$ .\.venv\Scripts\activate
-```
-
-## Install Dependencies
-
-Install the required packages using pip:
-
-```bash
-$ pip install -r requirements.txt
-```
-
-## Environment Variables
-
-Before running the application, you need to set up your environment variables.
-
-1.  Create a `.env` file by copying the example file:
+3. Activate the virtual environment
 
     ```bash
-    # For Windows
-    copy .env.example .env
-
-    # For macOS / Linux
-    cp .env.example .env
+    $ .\.venv\Scripts\activate
     ```
 
-2.  🔑 Open the `.env` file and add your [OpenAI API key](https://platform.openai.com/api-keys):
+4.  Install dependencies:
+
+    ```bash
+    $ pip install -r requirements.txt
+    ```
+
+5. Create a .env file in project root with your [OpenAI API key](https://platform.openai.com/api-keys):
 
     ```
     OPENAI_API_KEY="your_openai_api_key_here"
     ```
 
-## Run the server
+6. Run the server:
 
-```bash
-$ uvicorn app.main:app --reload
-```
+    ```bash
+    $ uvicorn app.main:app --reload
+    ```
 
 The application will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
-## API Endpoints
+## API Endpoints 🧰
 
 You can use a tool like [Postman](https://www.postman.com/) to test the endpoints.
 
@@ -163,7 +140,8 @@ You can use a tool like [Postman](https://www.postman.com/) to test the endpoint
             "rating": "High",
             "summary": "The candidate showcases a strong ability to learn new technologies quickly, having adapted to various roles and responsibilities over his 20-year career.",
             "evidence": [
-                "Led the architecture and development of critical AI-powered systems."
+                "Led the architecture and development of critical AI-powered systems.",
+                ...
             ]
         }
     }
