@@ -79,7 +79,6 @@ class ATSCheckRequest(BaseModel):
     """
     cv_text: str = Field(..., description="The full text content of the user's curriculum vitae.")
 
-
 class ATSIssue(BaseModel):
     """
     Represents a single issue found during the ATS scan, with a clear category.
@@ -87,7 +86,6 @@ class ATSIssue(BaseModel):
     issue_type: Literal['Formatting', 'Keywords', 'Parsing Risk', 'Contact Info', 'Structure'] = Field(..., description="The category of the issue found.")
     description: str = Field(..., description="A clear explanation of the potential problem.")
     suggestion: str = Field(..., description="An actionable suggestion on how to fix the issue.")
-
 
 class ATSResult(BaseModel):
     """
@@ -97,11 +95,40 @@ class ATSResult(BaseModel):
     summary: str = Field(..., description="A general summary of the CV's performance against ATS standards.")
     issues: List[ATSIssue] = Field(..., description="A list of specific issues found that could harm ATS parsing.")
 
-
 class ATSCheckResponse(BaseModel):
     """
     The final top-level response object for the ATS check API endpoint.
     """
     ats_check: ATSResult
 
+# --- JD analyzer models ---
+class JDAnalysisRequest(BaseModel):
+    """Request model for JD-only analysis."""
+    jd_text: str
+
+class IdentifiedProfile(BaseModel):
+    """Represents a single professional profile identified within a JD."""
+    profile_title: str = Field(..., description="The title of the identified professional profile, e.g., 'Data Scientist'.")
+    key_responsibilities: List[str] = Field(..., description="Specific responsibilities for this profile mentioned in the JD.")
+    #required_skills: List[str] = Field(..., description="Specific skills for this profile mentioned in the JD.")
+    core_requirements: List[str] = Field(..., description="Mandatory skills explicitly required for the role.")
+    desirable_skills: List[str] = Field(..., description="Skills listed as 'nice to have', 'preferred', or 'bonus points'.")
+
+class HiringRealism(BaseModel):
+    """Assessment of how realistic it is to hire for this role."""
+    rating: str = Field(..., description="The likelihood of finding a suitable candidate (e.g., 'High', 'Medium', 'Low').")
+    justification: str = Field(..., description="The reasoning behind the rating, based on market reality.")
+
+class JDAnalysis(BaseModel):
+    """The core analysis of the job description."""
+    is_hybrid_role: bool = Field(..., description="True if the JD combines multiple distinct roles.")
+    primary_focus: str = Field(..., description="The main functional area of the job.")
+    identified_profiles: List[IdentifiedProfile] = Field(..., description="A list of distinct profiles found in the JD.")
+    conflict_summary: str = Field(..., description="An explanation of why the combination of profiles is challenging.")
+    hiring_realism: HiringRealism = Field(..., description="An assessment of the hiring difficulty.")
+    recommendations: List[str] = Field(..., description="Actionable suggestions for the hiring manager.")
+
+class JDAnalysisResponse(BaseModel):
+    """The final Pydantic model for the JD analysis API response."""
+    jd_analysis: JDAnalysis
     

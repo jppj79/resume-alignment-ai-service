@@ -20,6 +20,7 @@ It's about more than just tweaking a resume for a single application; it’s abo
 * 🌱 **Actionable Skill Gaps:** Know exactly what skills to work on to become a better fit.
 * 🚀 **Learning Potential Rating:** Highlights your ability to adapt and grow into the role, even if you don't meet 100% of the requirements.
 * 🤖 **ATS-Compatibility Check:** Get concrete tips to ensure your resume gets past the bots and is seen by a human.
+* 🦄 **Job Description Analysis:** Get a deep dive into the job requirements, identifying key responsibilities and core/desirable requirements.
 
 ### Tech Stack & Core Mechanics 🛠️
 
@@ -84,7 +85,7 @@ You can use a tool like [Postman](https://www.postman.com/) to test the endpoint
 
 ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
 
-### Health Check
+### Health Check ⚙️
 
 -   **URL:** `/`
 -   **Method:** `GET`
@@ -93,7 +94,7 @@ You can use a tool like [Postman](https://www.postman.com/) to test the endpoint
     -   **Code:** 200
     -   **Content:** `{"status": "ok", "service": "alignment-service"}`
 
-### Analyze CV and Job Description
+### Analyze CV and Job Description ⚙️
 
 -   **URL:** `/analyze`
 -   **Method:** `POST`
@@ -145,15 +146,92 @@ You can use a tool like [Postman](https://www.postman.com/) to test the endpoint
             "rating": "High",
             "summary": "The candidate showcases a strong ability to learn new technologies quickly, having adapted to various roles and responsibilities over his 20-year career.",
             "evidence": [
-                "Led the architecture and development of critical AI-powered systems.",
-                ...
+                "Led the architecture and development of critical AI-powered systems."
             ]
         }
     }
 }
 ```
+### Analyze Job Description ⚙️
 
-### Check ATS Friendliness
+-   **URL:** `/analyze-jd-profile`
+-   **Method:** `POST`
+-   **Description:** Accepts Job Description text and returns a detailed, AI-powered analysis of role complexity.
+
+#### Payload Example for `/analyze-jd-profile`
+
+```json
+{
+    "jd_text": "Full text of the job description here..."
+}
+```
+
+#### Response Example
+```json
+{
+    "jd_analysis": {
+        "is_hybrid_role": true,
+        "primary_focus": "Cloud Operations and Incident Management with DevOps responsibilities",
+        "identified_profiles": [
+            {
+                "profile_title": "Cloud Operations Engineer",
+                "key_responsibilities": [
+                    "Perform daily operational tasks such as log analysis, system health checks, and user support",
+                    "Implement and document new processes on operational playbooks",
+                    "Monitor system health using custom health check tools and incident management platforms",
+                    "Foster a culture of continuous improvement and operational excellence",
+                    "Perform tenant deployment with tailor-built architecture"
+                ],
+                "core_requirements": [
+                    "Azure certifications (AZ-900, AZ-104, AZ-303, AZ-304)",
+                    "Proficiency in containerization and orchestration (Docker, Kubernetes)",
+                    "Understanding of networking, VNET, Load Balancer, Firewall, VPN",
+                    "Experience with Active Directory and authentication services (MFA, TOTP)",
+                    "Strong analytical and problem-solving skills"
+                ],
+                "desirable_skills": [
+                    "Experience with GCP cloud infrastructure",
+                    "Knowledge/experience in cloud databases (Cassandra, Mongodb, PostgreSQL)",
+                    "Familiarity with ITIL processes and service management best practices",
+                    "Experience with CI/CD pipelines",
+                    "Experience with Remote access solutions",
+                    "Proficiency in monitoring tools (Azure/GCP monitoring, BigQuery)"
+                ]
+            },
+            {
+                "profile_title": "Incident Manager",
+                "key_responsibilities": [
+                    "Proactively identify, diagnose, and troubleshoot complex issues",
+                    "Lead the resolution of major incidents",
+                    "Serve as a key escalation point for support teams",
+                    "Translate technical issues into summaries for non-technical stakeholders"
+                ],
+                "core_requirements": [
+                    "Ability to manage incidents effectively",
+                    "Knowledge of service management best practices",
+                    "Excellent communication skills"
+                ],
+                "desirable_skills": [
+                    "Experience with ServiceNow",
+                    "Understanding of change management processes"
+                ]
+            }
+        ],
+        "conflict_summary": "The role combines Cloud Operations and Incident Management with overlapping responsibilities, which require distinct skill sets and mindsets. While both profiles require technical expertise, the nature of incident management focuses more on communication and process efficiency, while cloud operations demand in-depth technical knowledge of the cloud environment, automation, and orchestration. Expecting one individual to excel in both areas is unrealistic given the depth and breadth of required skills.",
+        "hiring_realism": {
+            "rating": "Low",
+            "justification": "While it is feasible to find candidates with strong Cloud Operations skills, the addition of incident management responsibilities complicates the search. Candidates who are experienced in both fields are rare, and the extensive list of desirable skills further narrows the pool, leading to low hiring realism."
+        },
+        "recommendations": [
+            "Consider splitting the role into two separate positions: one focused on Cloud Operations and the other on Incident Management to attract more specialized candidates.",
+            "Refine the job description to target core responsibilities and remove less critical desirable skills to widen the candidate pool.",
+            "Adjust compensation and seniority expectations to align with the expected skill set and market reality."
+        ]
+    }
+}
+```
+
+### Check ATS Friendliness ⚙️
 
 -   **URL:** `/check-ats`
 -   **Method:** `POST`

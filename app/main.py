@@ -1,14 +1,15 @@
 from .core import config
 from fastapi import FastAPI, HTTPException
-from .schemas import AnalysisRequest, AnalysisResponse, ATSCheckRequest, ATSCheckResponse
+from .schemas import AnalysisRequest, AnalysisResponse, ATSCheckRequest, ATSCheckResponse, JDAnalysisRequest, JDAnalysisResponse
 from .services.analyzer import run_analysis
+from .services.jd_analyzer import run_jd_analysis
 from .services.ats_checker import run_ats_check
 
 # Initialize the FastAPI app
 app = FastAPI(
     title="ResumeAlign AI - Alignment Service",
     description="A microservice to analyze CVs against job descriptions.",
-    version="0.1.0"
+    version="0.2.0"
 )
 
 @app.get("/", tags=["Health Check"])
@@ -33,6 +34,26 @@ async def analyze_cv_jd(request: AnalysisRequest):
     except Exception as e:
         # Catch any other unexpected errors
         raise HTTPException(status_code=500, detail=f"An unexpected internal error occurred: {str(e)}")
+    
+@app.post("/analyze-jd-profile", response_model=JDAnalysisResponse, tags=["Analysis"])
+async def analyze_jd_profile(request: JDAnalysisRequest):
+    """
+    Analyzes a single Job Description (JD) for role complexity.
+
+    This endpoint examines a JD to determine if it describes a single cohesive
+    role or if it combines multiple distinct professional profiles (a "unicorn" role).
+    It returns a deconstruction of the required profiles, an assessment of hiring
+    realism, and actionable recommendations.
+    """
+    try:
+        analysis_result = await run_jd_analysis(request)
+        return analysis_result
+    except HTTPException as e:
+        # Re-raise controlled HTTP exceptions from the service layer
+        raise e
+    except Exception as e:
+        # Catch any other unexpected errors
+        raise HTTPException(status_code=500, detail="An unexpected internal error occurred.")
     
 @app.post("/check-ats", response_model=ATSCheckResponse, tags=["ATS Checker"])
 async def check_ats_friendliness(request: ATSCheckRequest):
