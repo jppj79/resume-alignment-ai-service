@@ -15,12 +15,23 @@ jobs:
       - name: 1. Checkout Code
         uses: actions/checkout@v4
 
-      - name: 2. Build Image Inside Minikube
-        # We must specify 'powershell' to use the Invoke-Expression command
+      - name: 2. Generate Unique Image Tag
+        # We give this step an 'id' so we can reference its outputs later
+        id: generate_tag
+        # We now write the output to GITHUB_OUTPUT
+        run: echo "IMAGE_TAG=$(echo ${env:GITHUB_SHA} | cut -c1-7)" >> ${env:GITHUB_OUTPUT}
+
+      - name: 3. Build and Tag Image Inside Minikube
         shell: powershell
         run: |
           minikube -p minikube docker-env | Invoke-Expression
-          docker build -t resume-service:latest .
+          docker build -t resume-service:${{ steps.generate_tag.outputs.IMAGE_TAG }} .
 
-      - name: 3. Deploy to Kubernetes
+      - name: 4. Update Kubernetes Manifest with New Image Tag
+        shell: powershell
+        run: |
+          # We also use the step output here for the replacement
+          (Get-Content -Path k8s\deployment.yaml -Raw) -replace 'resume-service:latest', 'resume-service:${{ steps.generate_tag.outputs.IMAGE_TAG }}' | Set-Content -Path k8s\deployment.yaml
+
+      - name: 5. Deploy to Kubernetes
         run: kubectl apply -f k8s/

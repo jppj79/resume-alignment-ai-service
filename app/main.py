@@ -17,7 +17,7 @@ async def read_root():
     """
     Health check endpoint to ensure the service is running.
     """
-    return {"version": "1.0.0", "status": "ok", "service": "alignment-service"}
+    return {"version": "1.0.1", "status": "ok", "service": "alignment-service"}
 
 @app.post("/analyze", response_model=AnalysisResponse, tags=["Analysis"])
 async def analyze_cv_jd(request: AnalysisRequest):
