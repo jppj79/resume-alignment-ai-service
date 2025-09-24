@@ -361,3 +361,125 @@ spec:
     > You should receive a healthy response, like: `{"status":"ok", "service": "alignment-service"}`.
 
 Congratulations! You have successfully deployed your application to a Kubernetes cluster and verified its endpoints. The final task is to make this entire process happen automatically.
+
+## 🎯 Task 3: Automate Your Deployments
+
+We have successfully deployed our application to Kubernetes, but the process was entirely manual. This is slow, prone to human error, and not a sustainable practice.
+
+**The Problem:** How do we automate this entire workflow so that any change to our code is automatically built and deployed to our cluster?
+
+**Your Goal:** To build a complete, end-to-end CI/CD (Continuous Integration / Continuous Deployment) pipeline using **GitHub Actions**. This pipeline will automatically trigger on a `git push`, building and deploying our application without any manual intervention.
+
+### 📜 The Workflow File: Your Automation Blueprint (Best Practice Edition)
+
+This is the heart of our automation. It's a YAML file that tells GitHub Actions exactly what steps to run. The following workflow uses the industry best practice of **unique image tagging** for traceability and declarative deployments.
+
+Create the folder structure `.github/workflows/` in the root of your project, and inside it, create a file named `main.yml`.
+
+```yaml
+name: Local Lab CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - 'feature/local-cicd-pipeline'
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: 1. Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 2. Generate Unique Image Tag
+        id: generate_tag
+        shell: powershell
+        # Use .Substring() to get the first 7 characters of the Git SHA in PowerShell
+        run: echo "IMAGE_TAG=$($env:GITHUB_SHA.Substring(0, 7))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: 3. Build and Tag Image Inside Minikube
+        shell: powershell
+        run: |
+          minikube -p minikube docker-env | Invoke-Expression
+          # We now reference the output from the 'generate_tag' step
+          docker build -t resume-service:${{ steps.generate_tag.outputs.IMAGE_TAG }} .
+
+      - name: 4. Update Kubernetes Manifest with New Image Tag
+        shell: powershell
+        run: |
+          # We also use the step output here for the replacement
+          (Get-Content -Path k8s\deployment.yaml -Raw) -replace 'resume-service:latest', 'resume-service:${{ steps.generate_tag.outputs.IMAGE_TAG }}' | Set-Content -Path k8s\deployment.yaml
+
+      - name: 5. Deploy to Kubernetes
+        run: kubectl apply -f k8s/
+```
+
+#### Key Concepts Explained
+* **Step 2: Generate Unique Image Tag:** We use a PowerShell command `.Substring(0, 7)` to get a short, unique ID from the Git commit that triggered the pipeline. This creates a perfect, traceable link between our code and the container image.
+* **Step 3: Build and Tag Image:** The `docker build` command now uses our unique `${{ steps.generate_tag.outputs.IMAGE_TAG }}` to tag the new image.
+* **Step 4: Update Kubernetes Manifest:** This is the crucial declarative step. Before deploying, we use a PowerShell command to find and replace `resume-service:latest` with our new unique tag (e.g., `resume-service:a1b2c3d`) directly in the `deployment.yaml` file.
+* **Step 5: Deploy to Kubernetes:** When `kubectl apply` runs, it sends the *updated* manifest to Kubernetes. Kubernetes sees that the `image:` spec has changed and automatically triggers a safe, rolling update to the new version.
+
+### 🚀 Your Turn: Run the Pipeline
+
+1.  **Configure the GitHub Self-Hosted Runner:**
+    This agent is the crucial link between GitHub's cloud platform and your local machine.
+
+    * **a. Navigate to the Runners Page:** In your forked GitHub repository, go to **Settings > Actions > Runners**.
+    * **b. Create a New Runner:** Click the **"New self-hosted runner"** button and select **Windows** as the operating system.
+    * **c. Follow GitHub's Instructions:** GitHub will now display a set of commands unique to your repository. You will run these in an **administrator PowerShell** window. The process will be:
+        1.  **Create a folder:** It's a good practice to create a dedicated directory for the runner.
+            ```powershell
+            mkdir C:\actions-runner; cd C:\actions-runner
+            ```
+        2.  **Download:** Run the `Invoke-WebRequest` command provided by GitHub to download the runner software.
+        3.  **Extract:** Run the command to unzip the downloaded file.
+        4.  **Configure:** Run the `config.cmd` command provided by GitHub. This is the most important step, as it securely registers your runner with your repository using a **unique token**.
+            > **Important:** You must copy the `config.cmd ...` command directly from your browser. The token is temporary and secret.
+        5.  **Run the Agent:** Finally, run the `.\run.cmd` command. Your PowerShell terminal will now show that the runner is connected and `Listening for jobs...`.
+
+            > **Leave this PowerShell window open!** It must stay running in the background to process your pipeline.
+
+
+2.  **Create the Workflow File:** Create the `.github/workflows/main.yml` file in your project and paste the corrected content from above.
+
+3.  **Trigger the Pipeline:** Commit and push your changes to trigger the pipeline.
+    ```powershell
+    git add .
+    git commit -m "Feat: Implement best-practice CI/CD pipeline"
+    git push origin feature/local-cicd-pipeline
+    ```
+
+4.  **Watch the Magic:**
+    * Watch your **runner's terminal** as it executes the job.
+    * Watch the live logs in the **"Actions" tab** of your GitHub repository.
+
+### ✅ Verify the Automated Deployment
+
+1.  **Check for New Pods:** Run `kubectl get pods`. You will see that the `AGE` of the pods is very recent, proving the pipeline successfully deployed the new version.
+
+    ```powershell
+    kubectl get pods
+    ```
+
+2.  **Test the Endpoint (Using the Existing Tunnel):**
+    This is where the magic of Kubernetes Services comes in. The tunnel you opened with `minikube service` connects to the stable **Service**, not directly to the individual pods. The Service acts like a smart signpost that automatically redirects traffic to the new pods as soon as they are ready.
+
+    **This means if you already have a tunnel running, you do not need to restart it.**
+
+    * Simply go back to **Postman** and re-run the exact same request to the same URL (e.g., `http://127.0.0.1:55123/health`).
+    * You should immediately see the new response reflecting your code changes (e.g., `"version": "0.4.0"`).
+
+    If you had previously closed the tunnel, you can just open a new one by running the command again:
+
+    ```powershell
+    minikube service resume-service
+    ```
+
+3.  **Test with Postman:**
+    * Use the new URL provided by the command above in Postman to test the `/health` endpoint. You should now see the changes you made to the code.
+
+## 🎉 Lab Complete! 🎉
+
+Congratulations! You have successfully built a complete, end-to-end local CI/CD pipeline using professional best practices. You now have hands-on experience with the fundamental workflow that powers modern software development.
