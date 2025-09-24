@@ -3,6 +3,25 @@
 Welcome! This guide will walk you through building a complete, automated CI/CD pipeline from scratch. We'll take a Python application, containerize it, and deploy it to a local Kubernetes cluster. The entire process is automated, mirroring a modern, real-world DevOps workflow.
 
 ---
+## 🤔 Who Is This Lab For?
+
+This hands-on guide is designed to bridge the gap between theory and practice. It's built for motivated individuals who want to understand the complete CI/CD workflow by building it themselves.
+
+#### ✅ This lab is a perfect fit if you are:
+
+* An aspiring **DevOps or Platform Engineer** who wants a practical, real-world project for your portfolio.
+* A **Backend Developer** curious about what happens after you `git push` and want to understand the deployment lifecycle.
+* A **Student or IT Professional** looking to gain hands-on experience with in-demand tools like Docker, Kubernetes, and GitHub Actions.
+* Someone who learns best by **doing, building, and troubleshooting**.
+
+#### 📚 What You'll Need to Know (Prerequisites):
+
+* **Basic Command-Line Skills:** You should be comfortable navigating directories and running commands in a terminal (this guide uses PowerShell).
+* **Git & GitHub Fundamentals:** You need to know how to `fork`, `clone`, `add`, `commit`, and `push` changes to a repository.
+* **Beginner Python Familiarity:** You don't need to be a Python expert, but you should understand the concept of a web API. You will not be writing any Python code in this lab.
+* **No Docker or Kubernetes Expertise Required!** This lab is specifically designed to teach you the practical application of these tools from the ground up.
+
+---
 ## 🎯 Task 0: Prepare Your DevOps Workshop
 
 **The Problem:** We can't build a powerful pipeline without the right tools, a clean workspace, and the project code to work on.
