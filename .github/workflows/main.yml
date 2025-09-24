@@ -18,8 +18,7 @@ jobs:
       - name: 2. Generate Unique Image Tag
         # We give this step an 'id' so we can reference its outputs later
         id: generate_tag
-        # We now write the output to GITHUB_OUTPUT
-        run: echo "IMAGE_TAG=$(echo ${env:GITHUB_SHA} | cut -c1-7)" >> ${env:GITHUB_OUTPUT}
+        run: echo "IMAGE_TAG=$($env:GITHUB_SHA.Substring(0, 7))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: 3. Build and Tag Image Inside Minikube
         shell: powershell
