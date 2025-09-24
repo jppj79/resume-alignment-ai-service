@@ -1,12 +1,35 @@
+# Specifies the core Kubernetes API version, 'v1', which is used for fundamental
+# objects like Services, Pods, and ConfigMaps.
 apiVersion: v1
+# Specifies the type of object we are creating. A 'Service' provides a stable
+# network endpoint (a consistent IP address and DNS name) for a set of pods.
 kind: Service
+# ---
+# Metadata contains the unique identifying information for this Service.
 metadata:
+  # The name of our Service. The Deployment and other parts of the cluster can
+  # communicate with our app using this name.
   name: resume-service
+# ---
+# The 'spec' section defines the desired state and behavior of the Service.
 spec:
+  # 'type' specifies how the Service is exposed. 'NodePort' exposes the Service on a
+  # static port on the cluster's Node IP address. This is a simple way to make our
+  # application accessible from outside the cluster for local development with Minikube.
   type: NodePort
+  # The 'selector' tells the Service which pods to route traffic to.
+  # It continuously scans for pods that have labels matching these key/value pairs.
   selector:
+    # This Service will find all pods with the label 'app: resume-service' and
+    # send network traffic to them. This is how the Service connects to the Pods
+    # created by our Deployment.
     app: resume-service
+  # 'ports' defines the port mapping for this Service.
   ports:
-    - protocol: TCP
-      port: 8000
-      targetPort: 8000
+    # The network protocol for this port mapping. TCP is the standard for HTTP traffic.
+  - protocol: TCP
+    # The port that the Service itself will be exposed on within the cluster's internal network.
+    port: 8000
+    # The port on the target pods that the traffic should be forwarded to.
+    # This means: traffic coming into the Service on port 8000 will be sent to port 8000 on the Pods.
+    targetPort: 8000

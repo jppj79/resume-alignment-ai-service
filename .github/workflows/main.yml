@@ -1,36 +1,67 @@
+# The display name of the workflow. This is what you'll see in the GitHub Actions UI.
 name: Local Lab CI/CD Pipeline
 
+# ---
+# The 'on' keyword defines the trigger for this workflow.
 on:
-  # This workflow triggers on any push to the 'feature/local-cicd-pipeline' branch
+  # This workflow will only run when a 'push' event occurs.
   push:
+    # And it will only run for pushes to this specific branch.
     branches:
       - 'feature/local-cicd-pipeline'
 
+# ---
+# A workflow is made up of one or more 'jobs' that can run in parallel or sequentially.
 jobs:
+  # We define a single job with the unique ID 'build-and-deploy'.
   build-and-deploy:
-    # This job will run on our local machine via the self-hosted runner
+    # This is a critical instruction. It tells GitHub not to run this job on a cloud-hosted
+    # virtual machine, but to send it to a runner that has the 'self-hosted' label,
+    # which is our local machine.
     runs-on: self-hosted
 
+    # 'steps' are the individual tasks that will be executed in sequence by the runner.
     steps:
+      # Step 1: Get the code.
       - name: 1. Checkout Code
+        # 'uses' tells the runner to use a pre-built community action.
+        # 'actions/checkout@v4' is the official action for checking out your repository's code
+        # so the subsequent steps can access it.
         uses: actions/checkout@v4
 
+      # Step 2: Create a unique and traceable tag for our Docker image.
       - name: 2. Generate Unique Image Tag
-        # We give this step an 'id' so we can reference its outputs later
+        # We give this step an 'id' so that we can reference its outputs in later steps.
         id: generate_tag
+        # We specify the shell to ensure our command runs in PowerShell.
+        shell: powershell
+        # This command gets the full Git commit SHA (e.g., a1b2c3d4e5f6...), takes the first 7
+        # characters, and saves it to a special file (GITHUB_OUTPUT) as an output variable
+        # named 'IMAGE_TAG'.
         run: echo "IMAGE_TAG=$($env:GITHUB_SHA.Substring(0, 7))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
+      # Step 3: Build the Docker image inside our local Kubernetes cluster.
       - name: 3. Build and Tag Image Inside Minikube
         shell: powershell
         run: |
+          # First, connect the runner's terminal to the Docker daemon running inside Minikube.
           minikube -p minikube docker-env | Invoke-Expression
+          # Then, build the image. It's tagged with the unique ID we generated in the previous step.
+          # The image now exists within the cluster's local cache.
           docker build -t resume-service:${{ steps.generate_tag.outputs.IMAGE_TAG }} .
 
+      # Step 4: Update our Kubernetes configuration to use the newly built image.
       - name: 4. Update Kubernetes Manifest with New Image Tag
         shell: powershell
         run: |
-          # We also use the step output here for the replacement
+          # This PowerShell command reads our deployment.yaml file, finds the placeholder image
+          # 'resume-service:latest', and replaces it with the new unique image tag we just built.
+          # This is the key to a declarative, traceable deployment.
           (Get-Content -Path k8s\deployment.yaml -Raw) -replace 'resume-service:latest', 'resume-service:${{ steps.generate_tag.outputs.IMAGE_TAG }}' | Set-Content -Path k8s\deployment.yaml
 
+      # Step 5: Apply the updated configuration to the cluster.
       - name: 5. Deploy to Kubernetes
+        # This command sends the modified deployment.yaml to the Kubernetes API.
+        # Kubernetes sees that the image tag has changed and automatically triggers a safe,
+        # rolling update to deploy the new version of our application.
         run: kubectl apply -f k8s/

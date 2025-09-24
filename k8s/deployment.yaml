@@ -1,28 +1,65 @@
+# Specifies the version of the Kubernetes API we are using to create this object.
+# 'apps/v1' is the standard, stable API for core workload resources like Deployments.
 apiVersion: apps/v1
+# Specifies the type of object we are creating. A 'Deployment' is a resource
+# that manages a set of identical pods, ensuring a specified number of them are always running.
 kind: Deployment
+# ---
+# Metadata contains data that helps uniquely identify the object, including a name and labels.
 metadata:
+  # The unique name for our Deployment resource.
   name: resume-service-deployment
+  # Labels are key/value pairs that are attached to objects. They are used to
+  # organize and select subsets of objects. Here, we're labeling this as part of the 'resume-service' app.
   labels:
     app: resume-service
+# ---
+# The 'spec' section is where we define the desired state for our Deployment.
+# Kubernetes will work to ensure the real state of the cluster matches this desired state.
 spec:
+  # 'replicas' specifies how many identical copies of our application pod should be running.
+  # Using more than one provides high availability.
   replicas: 2
+  # The 'selector' tells the Deployment which pods to manage.
   selector:
+    # It finds pods that have labels matching these 'matchLabels'.
+    # In this case, it will manage any pod with the label 'app: resume-service'.
     matchLabels:
       app: resume-service
+  # The 'template' is the blueprint for the pods that this Deployment will create.
   template:
+    # The pods created will have their own metadata.
     metadata:
+      # Each pod will get this label. This is how the Deployment's selector finds them.
       labels:
         app: resume-service
+    # The 'spec' for the pod defines its contents and behavior.
     spec:
+      # A list of containers that should run inside the pod.
       containers:
+      # The name of our container within the pod.
       - name: resume-service-container
+        # The Docker image to use for this container.
+        # Note: The ':latest' tag will be dynamically replaced by our CI/CD pipeline with a unique Git commit hash.
         image: resume-service:latest
+        # Specifies when to pull the container image.
+        # 'Never' is used in our local lab because we build the image directly inside Minikube's
+        # internal Docker environment, so it doesn't need to be pulled from an external registry.
         imagePullPolicy: Never
+        # The list of network ports to expose from the container.
         ports:
+        # The application inside the container is listening on port 8000.
         - containerPort: 8000
+        # A list of environment variables to set in the container.
         env:
-          - name: OPENAI_API_KEY
-            valueFrom:
-              secretKeyRef:
-                name: openai-secret
-                key: OPENAI_API_KEY
+          # The name of the environment variable inside the container.
+        - name: OPENAI_API_KEY
+          # Instead of providing a value directly (which would be insecure),
+          # we tell the container to get the value from another source.
+          valueFrom:
+            # Get the value from a Kubernetes 'Secret' object.
+            secretKeyRef:
+              # The name of the Secret object to look for.
+              name: openai-secret
+              # The specific key within that Secret whose value we want to use.
+              key: OPENAI_API_KEY
