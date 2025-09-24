@@ -4,20 +4,28 @@ from .schemas import AnalysisRequest, AnalysisResponse, ATSCheckRequest, ATSChec
 from .services.analyzer import run_analysis
 from .services.jd_analyzer import run_jd_analysis
 from .services.ats_checker import run_ats_check
+from app.__version__ import __version__
 
 # Initialize the FastAPI app
 app = FastAPI(
     title="ResumeAlign AI - Alignment Service",
     description="A microservice to analyze CVs against job descriptions.",
-    version="0.2.0"
+    version=__version__
 )
+
+@app.get("/", tags=["Health Check"])
+async def read_root():
+    """
+    Health check endpoint to ensure the service is running.
+    """
+    return {"version": __version__, "status": "ok", "service": "alignment-service"}
 
 @app.get("/health", tags=["Health Check"])
 async def read_root():
     """
     Health check endpoint to ensure the service is running.
     """
-    return {"version": "1.0.1", "status": "ok", "service": "alignment-service"}
+    return {"version": __version__, "status": "ok", "service": "alignment-service"}
 
 @app.post("/analyze", response_model=AnalysisResponse, tags=["Analysis"])
 async def analyze_cv_jd(request: AnalysisRequest):
