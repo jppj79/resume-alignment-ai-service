@@ -1,0 +1,80 @@
+# --- Python ---
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.pkl
+*.egg-info/
+*.egg
+.eggs/
+*.manifest
+*.spec
+
+# --- Virtual environments ---
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+
+# --- Tests ---
+.coverage
+htmlcov/
+.tox/
+.nox/
+.pytest_cache/
+.mypy_cache/
+coverage.xml
+.testmondata
+.pyre/
+
+# --- IDEs & editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Logs & temp files ---
+*.log
+*.tmp
+*.out
+*.bak
+*.orig
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+
+# --- Git ---
+.git/
+.gitignore
+.gitattributes
+
+# --- CI/CD ---
+.github/
+.gitlab-ci.yml
+.circleci/
+k8s/
+
+# --- Env & configs ---
+.env
+.env.*
+*.example
+*.sample
+
+# --- Build artifacts ---
+dist/
+build/
+*.egg-info/
+*.whl
+
+# --- Docker specific ---
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# --- Docs ---
+*.md
+docs/

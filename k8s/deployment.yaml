@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resume-service-deployment
+  labels:
+    app: resume-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: resume-service
+  template:
+    metadata:
+      labels:
+        app: resume-service
+    spec:
+      containers:
+      - name: resume-service-container
+        image: resume-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        env:
+          - name: OPENAI_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: openai-secret
+                key: OPENAI_API_KEY

@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Map host port to container port
+    ports:
+      - "${HOST_PORT}:${PORT}"
+    # Pass environment variables to the container
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PORT=${PORT}  # Internal container port
+    restart: unless-stopped
+    # Healthcheck to ensure FastAPI is running
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT}/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

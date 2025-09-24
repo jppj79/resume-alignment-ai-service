@@ -1,0 +1,26 @@
+name: Local Lab CI/CD Pipeline
+
+on:
+  # This workflow triggers on any push to the 'feature/local-cicd-pipeline' branch
+  push:
+    branches:
+      - 'feature/local-cicd-pipeline'
+
+jobs:
+  build-and-deploy:
+    # This job will run on our local machine via the self-hosted runner
+    runs-on: self-hosted
+
+    steps:
+      - name: 1. Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 2. Build Image Inside Minikube
+        # We must specify 'powershell' to use the Invoke-Expression command
+        shell: powershell
+        run: |
+          minikube -p minikube docker-env | Invoke-Expression
+          docker build -t resume-service:latest .
+
+      - name: 3. Deploy to Kubernetes
+        run: kubectl apply -f k8s/

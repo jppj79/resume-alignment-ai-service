@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
 
-print("Loading environment variables from .env file...")
+print("Loading environment variables...")
 load_dotenv()
 print("Environment variables loaded.")

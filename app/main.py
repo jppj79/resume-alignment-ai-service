@@ -12,7 +12,7 @@ app = FastAPI(
     version="0.2.0"
 )
 
-@app.get("/", tags=["Health Check"])
+@app.get("/health", tags=["Health Check"])
 async def read_root():
     """
     Health check endpoint to ensure the service is running.
