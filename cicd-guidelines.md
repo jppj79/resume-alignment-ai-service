@@ -330,6 +330,12 @@ spec:
     kubectl create secret generic openai-secret --from-literal=OPENAI_API_KEY='sk-YourSecretKeyGoesHere'
     ```
 
+    > **IMPORTANT:** By default, Kubernetes Secrets are **encoded** using Base64, not **encrypted**. This means anyone with access to view the Secret object can easily decode its value. The true purpose of a Secret is to decouple sensitive data (like API keys) from your application's source code and deployment files, which is a critical security practice.
+    ```powershell
+    # This command gets the encoded secret
+    kubectl get secret openai-secret -o yaml
+    ```
+
 4.  **Build the Image Inside Minikube:** This is a critical step where we build our container image in a place the Kubernetes cluster can find it without needing an external registry.
 
     **4a. Connect to Minikube's Docker Environment:** The following command reconfigures your current PowerShell terminal. After running it, any `docker` command you type will be sent to the Docker engine running *inside* your Minikube cluster, not your main Docker Desktop.
