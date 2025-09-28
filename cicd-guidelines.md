@@ -394,7 +394,7 @@ spec:
     # Replace the URL with the one provided by the 'minikube service' command
     curl http://127.0.0.1:51234/health
     ```
-    > You should receive a healthy response, like: `{"status":"ok", "service": "alignment-service"}`.
+    > You should receive a healthy response, like: `{"version":"0.1.0", "status":"ok", "service": "alignment-service"}`.
 
 Congratulations! You have successfully deployed your application to a Kubernetes cluster and verified its endpoints. The final task is to make this entire process happen automatically.
 
