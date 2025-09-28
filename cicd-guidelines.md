@@ -10,7 +10,7 @@ This hands-on guide is designed to bridge the gap between theory and practice. I
 #### ✅ This lab is a perfect fit if you are:
 
 * An aspiring **DevOps or Platform Engineer** who wants a practical, real-world project for your portfolio.
-* A **Backend Developer** curious about what happens after you `git push` and want to understand the deployment lifecycle.
+* A **Developer** curious about what happens after you `git push` and want to understand the deployment lifecycle.
 * A **Student or IT Professional** looking to gain hands-on experience with in-demand tools like Docker, Kubernetes, and GitHub Actions.
 * Someone who learns best by **doing, building, and troubleshooting**.
 
