@@ -519,3 +519,35 @@ jobs:
 ## 🎉 Lab Complete! 🎉
 
 Congratulations! You have successfully built a complete, end-to-end local CI/CD pipeline using professional best practices. You now have hands-on experience with the fundamental workflow that powers modern software development.
+
+---
+### 🎓 Bonus Challenge: The "Day After" Simulation
+
+In the real world, you shut down your computer at the end of the day. What happens to our lab environment when you do? Let's find out.
+
+**Your Final Task:** Go ahead and **restart your computer**.
+
+Once you're back in Windows, you'll notice that nothing from our lab works anymore. The `minikube service` tunnel is gone, the self-hosted runner is offline, and even `kubectl get pods` will likely fail. This is not a bug; it's by design. These components don't start automatically.
+
+Your challenge is to bring the entire DevOps environment back to life.
+
+#### ✅ Your Recovery Checklist:
+
+Prove you've mastered the lab by re-initializing the environment in the correct order.
+
+1.  🐳 **Start Docker Desktop:** Ensure the engine is running.
+2.  🚢 **Restart the Kubernetes Cluster:** The Minikube virtual machine/container needs to be started again.
+    ```powershell
+    minikube start --driver=docker
+    ```
+3.  🏃 **Relaunch the Self-Hosted Runner:** Navigate to your runner's directory and start the agent so it can listen for jobs from GitHub again.
+    ```powershell
+    cd C:\actions-runner
+    .\run.cmd
+    ```
+4.  🔗 **Re-establish the Network Tunnel:** Open a new tunnel to your running service so you can access it from your browser or Postman.
+    ```powershell
+    minikube service resume-service
+    ```
+
+By successfully completing this checklist, you've demonstrated a true understanding of how all the pieces of this environment depend on each other. Congratulations on completing the lab!
